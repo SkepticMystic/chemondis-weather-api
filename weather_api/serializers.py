@@ -7,6 +7,7 @@ class WeatherSerializer(serializers.ModelSerializer):
         model = Weather
         fields = [
             "city",
+            "temp",
             "temp_min",
             "temp_max",
             "pressure",

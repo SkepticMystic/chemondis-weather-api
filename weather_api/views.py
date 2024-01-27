@@ -27,6 +27,7 @@ def refresh_cache(city: str) -> Result:
     try:
         weather = Weather(
             city=city,
+            temp=data.get("main").get("temp"),
             temp_min=data.get("main").get("temp_min"),
             temp_max=data.get("main").get("temp_max"),
             pressure=data.get("main").get("pressure"),

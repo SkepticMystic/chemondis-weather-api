@@ -4,6 +4,7 @@ from django.db import models
 class Weather(models.Model):
     city = models.CharField(max_length=180)
 
+    temp = models.FloatField()
     temp_min = models.FloatField()
     temp_max = models.FloatField()
 
