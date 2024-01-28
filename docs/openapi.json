@@ -45,6 +45,16 @@
               "type": "string",
               "example": "London"
             }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "description": "The language to return the weather description in",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "en"
+            }
           }
         ],
         "responses": {
