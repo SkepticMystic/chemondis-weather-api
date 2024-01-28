@@ -1,1 +1,5 @@
-.env
+.git
+.gitignore
+.venv
+db.sqlite3
+docs

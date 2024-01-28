@@ -1,0 +1,16 @@
+# NOTE: There is a dependency clash between docker-py, requests, and urllib
+# SOURCE: https://github.com/docker/docker-py/issues/3113
+# Once solution appears to be using `docker compose` as opposed to `docker-compose`
+# SOURCE: https://www.reddit.com/r/docker/comments/16rbxe5/dockercompose_up_keeps_throwing_errors/
+version: "3"
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    # TODO: This shouldn't be necessary, but I'm having firewall issues on this machine
+    network_mode: "host"
