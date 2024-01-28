@@ -86,7 +86,7 @@ class WeatherApiView(APIView):
             if (not refresh_result.ok):
                 return Response(
                     refresh_result.json(),
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
 
             else:

@@ -1,0 +1,168 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Che Mondis - Weather API",
+    "description": "This API allows users to get the current weather for a given city. Results are pulled from [Open Weather](https://openweathermap.org), and cached for a short period.",
+    "contact": {
+      "email": "rossk29@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Project README",
+    "url": "https://github.com/SkepticMystic/chemondis-weather-api"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "weather",
+      "description": "Details about the current weather in a given city"
+    }
+  ],
+  "paths": {
+    "/weather/{city}": {
+      "get": {
+        "tags": ["weather"],
+        "summary": "Get the weather for a given city",
+        "description": "Get the current weather details for some city",
+        "operationId": "getWeather",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "path",
+            "description": "The city to fetch weather for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "London"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Weather"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "City param is required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "City not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Weather": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string",
+                "example": "London"
+              },
+              "temp": {
+                "type": "number",
+                "format": "int64",
+                "example": 23.2
+              },
+              "temp_min": {
+                "type": "number",
+                "format": "int64",
+                "example": 16.3
+              },
+              "temp_max": {
+                "type": "number",
+                "format": "int64",
+                "example": 27.4
+              },
+              "pressure": {
+                "type": "number",
+                "format": "int64",
+                "example": 10.1
+              },
+              "humidty": {
+                "type": "number",
+                "format": "int64",
+                "example": 16
+              },
+              "wind_speed": {
+                "type": "number",
+                "format": "int64",
+                "example": 7.9
+              },
+              "wind_direction": {
+                "type": "string",
+                "example": "north",
+                "enum": ["north", "south", "east", "west"]
+              },
+              "description": {
+                "type": "string",
+                "example": "partly cloudy"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResult": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "example": false
+          },
+          "data": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
