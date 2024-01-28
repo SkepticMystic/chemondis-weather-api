@@ -1,16 +1,13 @@
 import aiohttp
 import asyncio
-from dotenv import get_key
 from .result import Result, ok, err
+from .env import ENV
 
 
 async def get_json(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             return await response.json()
-
-
-API_KEY = get_key('.env', 'OPEN_WEATHER_API_KEY')
 
 
 # Example json response:
@@ -69,8 +66,8 @@ async def get_open_weather(city: str, lang: str) -> Result:
         params = {
             'q': city,
             'lang': lang,
-            'appid': API_KEY,
             'units': 'metric',
+            'appid': ENV.get('OPEN_WEATHER_API_KEY'),
         }
 
         url = f'{BASE_URL}?' + \

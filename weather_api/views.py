@@ -9,7 +9,7 @@ import pytz
 from .open_weather import get_open_weather
 from .result import ok, err, Result
 import asyncio
-from dotenv import get_key
+from .env import ENV
 
 
 def refresh_cache(city: str, lang: str) -> Result:
@@ -49,14 +49,6 @@ def refresh_cache(city: str, lang: str) -> Result:
         return err(e)
 
 
-CACHE_TTL_MINS = get_key('.env', 'CACHE_TTL_MINS')
-# TODO: I believe the value should be in an enum (e.g. 5, 10, 15, 30, 60)
-if (CACHE_TTL_MINS is None or CACHE_TTL_MINS == ''):
-    CACHE_TTL_MINS = 5
-else:
-    CACHE_TTL_MINS = int(CACHE_TTL_MINS)
-
-
 class WeatherApiView(APIView):
     def get(self, request, city, *args, **kwargs):
         '''
@@ -83,7 +75,7 @@ class WeatherApiView(APIView):
 
         # Try get a cached result
         timestamp__gte = datetime.now(pytz.utc) -\
-            timedelta(minutes=CACHE_TTL_MINS)
+            timedelta(minutes=ENV.get('CACHE_TTL_MINS'))
 
         # Implication is that the cache 'key' is city + lang
         weather = Weather.objects\
