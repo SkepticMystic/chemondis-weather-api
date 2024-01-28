@@ -5,5 +5,5 @@ from weather_api import urls as weather_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('weather/', include(weather_urls)),
+    path('weather/<str:city>', include(weather_urls)),
 ]

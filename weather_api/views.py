@@ -51,16 +51,16 @@ def refresh_cache(city: str) -> Result:
 
 
 class WeatherApiView(APIView):
-    def get(self, request: Request, *args, **kwargs):
+    def get(self, request, city):
         '''
-        Get the weather for a given city=name query_param
+        Get the weather for a given /<str:city>
         Try get a cached result, otherwise call the open weather api
         '''
 
-        city = request.query_params.get("city")
-        if (city is None):
+        print('city:', city)
+        if (city == ''):
             return Response(
-                err('city query_param is required').json(),
+                err('city param is required').json(),
                 status=status.HTTP_400_BAD_REQUEST
             )
 

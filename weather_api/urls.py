@@ -4,5 +4,5 @@ from .views import (
 )
 
 urlpatterns = [
-    re_path('api', WeatherApiView.as_view()),
+    re_path('', WeatherApiView.as_view()),
 ]
