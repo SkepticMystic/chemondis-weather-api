@@ -69,7 +69,10 @@ class WeatherApiView(APIView):
 
         lang = request.query_params.get('lang')
         # SOURCE: https://openweathermap.org/current#multi
-        if (lang is None or (lang not in ['af', 'de'])):
+        if (
+            lang is None or
+            lang not in ['en', 'af', 'de']
+        ):
             print('unsupported lang:', lang, ', defaulting to en')
             lang = 'en'
 
