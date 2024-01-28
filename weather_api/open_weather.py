@@ -55,14 +55,26 @@ API_KEY = get_key('.env', 'OPEN_WEATHER_API_KEY')
 #     'name': 'London',
 #     'cod': 200
 # }
-async def get_open_weather(city: str) -> Result:
+
+BASE_URL = 'http://api.openweathermap.org/data/2.5/weather'
+
+
+async def get_open_weather(city: str, lang: str) -> Result:
     '''
     Call the Open Weather api for a given city
     '''
 
     try:
         # TODO: Sanitize & encode city input
-        url = f"http://api.openweathermap.org/data/2.5/weather?appid={API_KEY}&q={city}&units=metric"
+        params = {
+            'q': city,
+            'lang': lang,
+            'appid': API_KEY,
+            'units': 'metric',
+        }
+
+        url = f'{BASE_URL}?' + \
+            '&'.join([f'{k}={v}' for k, v in params.items()])
 
         json = await get_json(url)
 

@@ -12,13 +12,13 @@ import asyncio
 from dotenv import get_key
 
 
-def refresh_cache(city: str) -> Result:
+def refresh_cache(city: str, lang: str) -> Result:
     '''
     Call the open weather api and save the result to the db
     '''
 
     # call open weather api
-    open_weather_result = asyncio.run(get_open_weather(city))
+    open_weather_result = asyncio.run(get_open_weather(city, lang))
     if (not open_weather_result.ok):
         return open_weather_result
 
@@ -28,6 +28,7 @@ def refresh_cache(city: str) -> Result:
     try:
         weather = Weather(
             city=city,
+            lang=lang,
             temp=data.get("main").get("temp"),
             temp_min=data.get("main").get("temp_min"),
             temp_max=data.get("main").get("temp_max"),
@@ -55,15 +56,13 @@ if (CACHE_TTL_MINS is None or CACHE_TTL_MINS == ''):
 else:
     CACHE_TTL_MINS = int(CACHE_TTL_MINS)
 
-# TODO: Handle 2 other languages
-#   See here for more info: https://openweathermap.org/current#multi
-
 
 class WeatherApiView(APIView):
-    def get(self, request, city):
+    def get(self, request, city, *args, **kwargs):
         '''
         Get the weather for a given /<str:city>
         Try get a cached result, otherwise call the open weather api
+        `lang` query param is optional
         '''
 
         print('city:', city)
@@ -75,13 +74,22 @@ class WeatherApiView(APIView):
 
         # standardize city input
         city = city.lower()
+
+        lang = request.query_params.get('lang')
+        # SOURCE: https://openweathermap.org/current#multi
+        if (lang is None or (lang not in ['af', 'de'])):
+            print('unsupported lang:', lang, ', defaulting to en')
+            lang = 'en'
+
+        # Try get a cached result
         timestamp__gte = datetime.now(pytz.utc) -\
             timedelta(minutes=CACHE_TTL_MINS)
 
-        # Try get a cached result
+        # Implication is that the cache 'key' is city + lang
         weather = Weather.objects\
             .filter(
                 city=city,
+                lang=lang,
                 timestamp__gte=timestamp__gte
             )\
             .last()
@@ -90,8 +98,7 @@ class WeatherApiView(APIView):
 
         if (weather is None):
             # Either we don't have a cached result, or it's too old
-            # So we refresh the it
-            refresh_result = refresh_cache(city)
+            refresh_result = refresh_cache(city, lang)
 
             if (not refresh_result.ok):
                 return Response(
