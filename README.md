@@ -93,6 +93,4 @@ The `Weather` type is defined as follows:
 
 The following environment variables can be set to configure the API. They can be set in a `.env` file in the root of the project, or passed directly to the [deployment command](#deployment).
 
-<!-- TODO -->
-
-- `CACHE_TTL`: The time-to-live (TTL) for the cache, in minutes. Defaults to 5 minutes.
+- `CACHE_TTL_MINS`: The time-to-live (TTL) for the cache, in minutes. Defaults to 5 minutes.
