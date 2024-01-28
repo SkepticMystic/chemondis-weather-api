@@ -46,6 +46,9 @@ def refresh_cache(city: str) -> Result:
         print('refresh_cache exception:', e)
         return err(e)
 
+# TODO: Handle 2 other languages
+#   See here for more info: https://openweathermap.org/current#multi
+
 
 class WeatherApiView(APIView):
     def get(self, request: Request, *args, **kwargs):
