@@ -100,7 +100,9 @@ class WeatherApiView(APIView):
 
         print('cached weather:', weather)
 
-        if (weather is None):
+        cache_hit = weather is not None
+
+        if (not cache_hit):
             # Either we don't have a cached result, or it's too old
             refresh_result = refresh_cache(raw_city, lang)
 
@@ -119,5 +121,10 @@ class WeatherApiView(APIView):
 
         return Response(
             ok(serializer.data).json(),
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
+            headers={
+                'X-Weather-Api-Cache-Hit': str(cache_hit),
+                # TODO: Investigate cache headers
+                # 'Cache-Control': 'no-cache' if cache_hit else 'public',
+            }
         )
