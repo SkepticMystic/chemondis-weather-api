@@ -62,7 +62,6 @@ async def get_open_weather(raw_city: str, lang: str) -> Result:
     '''
 
     try:
-        # TODO: Sanitize & encode city input
         params = {
             'lang': lang,
             'q': raw_city,

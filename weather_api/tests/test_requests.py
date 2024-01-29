@@ -71,3 +71,5 @@ class TestRequests(TestCase):
             response_2.headers.get('X-Weather-Api-Cache-Hit'),
             'True',
         )
+
+        self.assertDictEqual(json_1, json_2)
