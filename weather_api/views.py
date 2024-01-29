@@ -9,16 +9,17 @@ import pytz
 from .open_weather import get_open_weather
 from .result import ok, err, Result
 import asyncio
+from django.db.models import Q
 from .env import ENV
 
 
-def refresh_cache(city: str, lang: str) -> Result:
+def refresh_cache(raw_city: str, lang: str) -> Result:
     '''
     Call the open weather api and save the result to the db
     '''
 
     # call open weather api
-    open_weather_result = asyncio.run(get_open_weather(city, lang))
+    open_weather_result = asyncio.run(get_open_weather(raw_city, lang))
     if (not open_weather_result.ok):
         return open_weather_result
 
@@ -27,8 +28,11 @@ def refresh_cache(city: str, lang: str) -> Result:
 
     try:
         weather = Weather(
-            city=city,
             lang=lang,
+            raw_city=raw_city,
+            # NOTE: Don't .lower(), we'll run the query case-insensitively
+            resolved_city=data.get("name"),
+            country=data.get("sys").get("country"),
             temp=data.get("main").get("temp"),
             temp_min=data.get("main").get("temp_min"),
             temp_max=data.get("main").get("temp_max"),
@@ -60,15 +64,14 @@ class WeatherApiView(APIView):
         `lang` query param is optional
         '''
 
-        print('city:', city)
-        if (city == ''):
+        raw_city = city.lower()
+        print('raw_city:', raw_city)
+        # TODO: Can this even happen? The route may not match if empty
+        if (raw_city == ''):
             return Response(
-                err('city param is required').json(),
+                err('raw_city param is required').json(),
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        # standardize city input
-        city = city.lower()
 
         lang = request.query_params.get('lang')
         # SOURCE: https://openweathermap.org/current#multi
@@ -84,11 +87,14 @@ class WeatherApiView(APIView):
             timedelta(minutes=ENV.get('CACHE_TTL_MINS'))
 
         # Implication is that the cache 'key' is city + lang
+        # NOTE: We search the cache for raw_ or resolved_city
+        #       OpenWeather geocodes multiple inputs to the same output
         weather = Weather.objects\
             .filter(
-                city=city,
-                lang=lang,
-                timestamp__gte=timestamp__gte
+                (Q(raw_city=raw_city) |
+                 Q(resolved_city__iexact=raw_city)) &
+                Q(lang=lang) &
+                Q(timestamp__gte=timestamp__gte)
             )\
             .last()
 
@@ -96,13 +102,13 @@ class WeatherApiView(APIView):
 
         if (weather is None):
             # Either we don't have a cached result, or it's too old
-            refresh_result = refresh_cache(city, lang)
+            refresh_result = refresh_cache(raw_city, lang)
 
             if (not refresh_result.ok):
                 # The err result holds a status code and message
                 return Response(
-                    refresh_result.data.message,
-                    status=refresh_result.data.status
+                    err(refresh_result.data.get('message')).json(),
+                    status=refresh_result.data.get('status')
                 )
 
             else:

@@ -56,7 +56,7 @@ async def get_json(url):
 BASE_URL = 'http://api.openweathermap.org/data/2.5/weather'
 
 
-async def get_open_weather(city: str, lang: str) -> Result:
+async def get_open_weather(raw_city: str, lang: str) -> Result:
     '''
     Call the Open Weather api for a given city
     '''
@@ -64,8 +64,8 @@ async def get_open_weather(city: str, lang: str) -> Result:
     try:
         # TODO: Sanitize & encode city input
         params = {
-            'q': city,
             'lang': lang,
+            'q': raw_city,
             'units': 'metric',
             'appid': ENV.get('OPEN_WEATHER_API_KEY'),
         }
@@ -79,7 +79,7 @@ async def get_open_weather(city: str, lang: str) -> Result:
             return ok(json)
 
         else:
-            print('get_open_weather.cod != 200')
+            print('get_open_weather.cod != 200', json)
             return err({
                 'status': json.get('cod'),
                 'message': json.get('message'),

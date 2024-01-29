@@ -2,7 +2,11 @@ from django.db import models
 
 
 class Weather(models.Model):
-    city = models.CharField(max_length=180)
+    raw_city = models.CharField(max_length=180)
+    resolved_city = models.CharField(max_length=180)
+
+    country = models.CharField(max_length=5)
+
     description = models.CharField(max_length=180)
 
     temp = models.FloatField()
@@ -23,4 +27,4 @@ class Weather(models.Model):
     )
 
     def __str__(self):
-        return f'{self.city} ({self.lang}) - {self.timestamp}'
+        return f'{self.resolved_city} ({self.lang}) - {self.timestamp}'
