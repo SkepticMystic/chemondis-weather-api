@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project deploys a Django REST API enabling users to fetch the current weather in any city. The results are cached for a configurable amount of time, to avoid hitting the OpenWeatherMap API too often.
+This project deploys a Django REST API enabling users to fetch the current weather in any city. The data is pulled from [Open Weather Map](https://openweathermap.org). Results are cached for a configurable amount of time, to avoid hitting the upstream API too often.
 
 ## Requirements
 
@@ -26,7 +26,7 @@ git clone https://github.com/SkepticMystic/chemondis-weather-api.git
 cd chemondis-weather-api
 ```
 
-3. Create a `.env` file in the root of the project, and set the `OPEN_WEATHER_API_KEY` variable to your OpenWeatherMap API key:
+3. Create a `.env` file in the root of the project, and set the `OPEN_WEATHER_API_KEY` variable to your [OpenWeatherMap API key](#requirements). The file should look like this (with `{your-api-key}` replaced with your actual API key):
 
 ```env
 OPEN_WEATHER_API_KEY="{your-api-key}"
@@ -64,13 +64,7 @@ On an unsuccessful request, the response will indicate an error occured, with a 
 }
 ```
 
-Therefore, the general shape of a response is a [discriminated union](https://en.wikipedia.org/wiki/Tagged_union) of the form:
-
-```ts
-{ ok: true, data: Weather } | { ok: false, data: string }
-```
-
-The consumer of the API can check the `ok` property to determine if the request was successful or not.
+Therefore, the general shape of a response is a [discriminated union](https://en.wikipedia.org/wiki/Tagged_union). The consumer of the API can check the `ok` property to determine if the request was successful or not.
 
 The `Weather` type is defined as follows:
 
@@ -89,8 +83,17 @@ The `Weather` type is defined as follows:
 }
 ```
 
+### Query Parameters
+
+The following query parameters can be used to customize the response:
+
+- `lang`: The language to return the weather description in. Defaults to `en`. Supported values are:
+  - `en` (English)
+  - `de` (German)
+  - `af` (Afrikaans)
+
 ## Configuration
 
-The following environment variables can be set to configure the API. They can be set in a `.env` file in the root of the project, or passed directly to the [deployment command](#deployment).
+The following environment variables can be set to configure the API. They can be set in a `.env` file in the root of the project.
 
 - `CACHE_TTL_MINS`: The time-to-live (TTL) for the cache, in minutes. Defaults to 5 minutes.
