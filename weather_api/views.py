@@ -40,6 +40,9 @@ def refresh_cache(raw_city: str, lang: str) -> Result:
         return err({'status': 500, 'message': 'Error caching weather'})
 
 
+SUPPORTED_LANGS = ['en', 'af', 'de']
+CACHE_TTL_MINS = ENV.get('CACHE_TTL_MINS')
+
 
 class WeatherApiView(APIView):
     def get(self, request, city, *args, **kwargs):
@@ -55,15 +58,18 @@ class WeatherApiView(APIView):
 
         # See source for other supported languages
         # SOURCE: https://openweathermap.org/current#multi
-        if (
-            lang is None or
-            lang not in ['en', 'af', 'de']
-        ):
-            lang = 'en'
+        lang = request.query_params.get('lang')
+        if (lang is None):
+            lang = SUPPORTED_LANGS[0]
+        elif (lang not in SUPPORTED_LANGS):
+            return Response(
+                err('Unsupported language. See https://github.com/SkepticMystic/chemondis-weather-api#query-parameters for valid inputs').json(),
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         # Try get a cached result
         timestamp__gte = datetime.now(pytz.utc) -\
-            timedelta(minutes=ENV.get('CACHE_TTL_MINS'))
+            timedelta(minutes=CACHE_TTL_MINS)
 
         # Implication is that the cache 'key' is city + lang
         # NOTE: We search the cache for raw_ or resolved_city,
@@ -100,6 +106,6 @@ class WeatherApiView(APIView):
             status=status.HTTP_200_OK,
             headers={
                 'X-Weather-Api-Cache-Hit': str(cache_hit),
-                'Cache-Control': f'public, max-age={ENV.get("CACHE_TTL_MINS") * 60}'
+                'Cache-Control': f'public, max-age={CACHE_TTL_MINS * 60}'
             }
         )

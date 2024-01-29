@@ -70,6 +70,17 @@
             }
           },
 
+          "400": {
+            "description": "Unsupported language",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            }
+          },
+
           "404": {
             "description": "City not found",
             "content": {
