@@ -102,7 +102,6 @@ class WeatherApiView(APIView):
             status=status.HTTP_200_OK,
             headers={
                 'X-Weather-Api-Cache-Hit': str(cache_hit),
-                # TODO: Investigate cache headers
-                # 'Cache-Control': 'no-cache' if cache_hit else 'public',
+                'Cache-Control': f'public, max-age={ENV.get("CACHE_TTL_MINS") * 60}'
             }
         )

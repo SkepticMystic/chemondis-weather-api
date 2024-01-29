@@ -67,6 +67,9 @@ class TestRequests(TestCase):
         self.assertIsNotNone(json_2, response_2)
         self.assertTrue(json_2.get('ok'), json_2)
 
+        # NOTE: Responses are cached on two levels: in the browser and the db
+        # The browser cache is not tested here, since self.client.get() doesn't use it
+        # So we check the db cache by looking at the response header
         self.assertEqual(
             response_2.headers.get('X-Weather-Api-Cache-Hit'),
             'True',
