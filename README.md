@@ -96,7 +96,7 @@ The following query parameters can be used to customize the response:
 
 The following environment variables can be set to configure the API. They can be set in a `.env` file in the root of the project.
 
-- `CACHE_TTL_MINS`: The time-to-live (TTL) for the cache, in minutes. Defaults to 5 minutes.
+- `CACHE_TTL_MINS`: The time-to-live (TTL) for the cache, in minutes. Defaults to 5 minutes. Valid values are: `5`, `10`, and `60`.
 
 ## Caching
 
