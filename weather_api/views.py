@@ -24,24 +24,11 @@ def refresh_cache(raw_city: str, lang: str) -> Result:
         return open_weather_result
 
     # save to db
-    data = open_weather_result.data
-
     try:
-        weather = Weather(
-            lang=lang,
-            raw_city=raw_city,
-            # NOTE: Don't .lower(), we'll run the query case-insensitively
-            resolved_city=data.get("name"),
-            country=data.get("sys").get("country"),
-            temp=data.get("main").get("temp"),
-            temp_min=data.get("main").get("temp_min"),
-            temp_max=data.get("main").get("temp_max"),
-            pressure=data.get("main").get("pressure"),
-            humidity=data.get("main").get("humidity"),
-            wind_speed=data.get("wind").get("speed"),
-            # TODO: Convert this to north, south, east, west
-            wind_direction=data.get("wind").get("deg"),
-            description=data.get("weather")[0].get("description"),
+        weather = Weather.open_weather_to_model(
+            raw_city,
+            lang,
+            open_weather_result.data
         )
 
         weather.save()
@@ -61,17 +48,11 @@ class WeatherApiView(APIView):
         '''
         Get the weather for a given /<str:city>
         Try get a cached result, otherwise call the open weather api
-        `lang` query param is optional
+        `lang` query param optionally specifies the language
         '''
 
+        # NOTE: raw_city can't be None or '', the route wouldn't match
         raw_city = city.lower()
-        print('raw_city:', raw_city)
-        # TODO: Can this even happen? The route may not match if empty
-        if (raw_city == ''):
-            return Response(
-                err('raw_city param is required').json(),
-                status=status.HTTP_400_BAD_REQUEST
-            )
 
         lang = request.query_params.get('lang')
         # SOURCE: https://openweathermap.org/current#multi
@@ -79,7 +60,6 @@ class WeatherApiView(APIView):
             lang is None or
             lang not in ['en', 'af', 'de']
         ):
-            print('unsupported lang:', lang, ', defaulting to en')
             lang = 'en'
 
         # Try get a cached result
@@ -87,16 +67,14 @@ class WeatherApiView(APIView):
             timedelta(minutes=ENV.get('CACHE_TTL_MINS'))
 
         # Implication is that the cache 'key' is city + lang
-        # NOTE: We search the cache for raw_ or resolved_city
+        # NOTE: We search the cache for raw_ or resolved_city,
         #       OpenWeather geocodes multiple inputs to the same output
-        weather = Weather.objects\
-            .filter(
-                (Q(raw_city=raw_city) |
-                 Q(resolved_city__iexact=raw_city)) &
-                Q(lang=lang) &
-                Q(timestamp__gte=timestamp__gte)
-            )\
-            .last()
+        weather = Weather.objects.filter(
+            (Q(raw_city=raw_city) |
+             Q(resolved_city__iexact=raw_city)) &
+            Q(lang=lang) &
+            Q(timestamp__gte=timestamp__gte)
+        ).last()
 
         print('cached weather:', weather)
 
