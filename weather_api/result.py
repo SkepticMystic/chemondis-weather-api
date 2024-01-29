@@ -1,3 +1,8 @@
+# This file implements a Result class, to build tagged unions.
+# See here for more info: https://en.wikipedia.org/wiki/Tagged_union
+# In this version, a boolean flag `ok` is used to differentiate
+# between the two possible states of `ok` and `err`.
+
 class Result:
     ok: bool
     data: any
@@ -19,6 +24,7 @@ class Result:
         }
 
 
+# Helper functions to create particular instances of Result
 def err(data: any):
     return Result(False, data)
 

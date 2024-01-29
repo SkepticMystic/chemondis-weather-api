@@ -3,6 +3,7 @@ from .models import Weather
 
 
 class WeatherSerializer(serializers.ModelSerializer):
+    # Present the Open Weather resolved_city to the end user as "city"
     city = serializers.CharField(source='resolved_city')
 
     class Meta:

@@ -21,7 +21,7 @@ def refresh_cache(raw_city: str, lang: str) -> Result:
     # call open weather api
     open_weather_result = asyncio.run(get_open_weather(raw_city, lang))
     if (not open_weather_result.ok):
-        return open_weather_result
+        return open_weather_result  # Returning early if there's an error
 
     # save to db
     try:
@@ -37,24 +37,23 @@ def refresh_cache(raw_city: str, lang: str) -> Result:
 
     except Exception as e:
         print('refresh_cache exception:', e)
-        return err({
-            'status': 500,
-            'message': 'Error caching weather',
-        })
+        return err({'status': 500, 'message': 'Error caching weather'})
+
 
 
 class WeatherApiView(APIView):
     def get(self, request, city, *args, **kwargs):
         '''
         Get the weather for a given /<str:city>
-        Try get a cached result, otherwise call the open weather api
+        Try get a cached result, otherwise call the Open Weather api
         `lang` query param optionally specifies the language
         '''
 
-        # NOTE: raw_city can't be None or '', the route wouldn't match
+        # NOTE: raw_city can't be None or '', otherwise the route wouldn't match.
+        #       So we can assume it's a non-empty string
         raw_city = city.lower()
 
-        lang = request.query_params.get('lang')
+        # See source for other supported languages
         # SOURCE: https://openweathermap.org/current#multi
         if (
             lang is None or
@@ -70,16 +69,15 @@ class WeatherApiView(APIView):
         # NOTE: We search the cache for raw_ or resolved_city,
         #       OpenWeather geocodes multiple inputs to the same output
         weather = Weather.objects.filter(
-            (Q(raw_city=raw_city) |
-             Q(resolved_city__iexact=raw_city)) &
+            (
+                Q(raw_city=raw_city) |
+                Q(resolved_city__iexact=raw_city)
+            ) &
             Q(lang=lang) &
             Q(timestamp__gte=timestamp__gte)
         ).last()
 
-        print('cached weather:', weather)
-
         cache_hit = weather is not None
-
         if (not cache_hit):
             # Either we don't have a cached result, or it's too old
             refresh_result = refresh_cache(raw_city, lang)

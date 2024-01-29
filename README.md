@@ -64,7 +64,7 @@ On an unsuccessful request, the response will indicate an error occured, with a 
 }
 ```
 
-Therefore, the general shape of a response is a [discriminated union](https://en.wikipedia.org/wiki/Tagged_union). The consumer of the API can check the `ok` property to determine if the request was successful or not.
+Therefore, the general shape of a response is a [tagged union](https://en.wikipedia.org/wiki/Tagged_union). The consumer of the API can check the `ok` property to determine if the request was successful or not.
 
 The `Weather` type is defined as follows:
 
