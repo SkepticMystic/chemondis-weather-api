@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project deploys a Django REST API enabling users to fetch the current weather in any city. The data is pulled from [Open Weather Map](https://openweathermap.org). Results are cached for a configurable amount of time, to avoid hitting the upstream API too often.
+This project deploys a Django REST API enabling users to fetch the current weather in any city. The data is pulled from [Open Weather Map](https://openweathermap.org). Results are [cached](#caching) for a configurable amount of time, to avoid hitting the upstream API too often.
 
 ## Requirements
 
@@ -97,3 +97,12 @@ The following query parameters can be used to customize the response:
 The following environment variables can be set to configure the API. They can be set in a `.env` file in the root of the project.
 
 - `CACHE_TTL_MINS`: The time-to-live (TTL) for the cache, in minutes. Defaults to 5 minutes.
+
+## Caching
+
+Responses from OpenWeatherMap are cached on two levels:
+
+1. All responses are stored in SQLite, and only retrieved if still fresh.
+2. In the browser, using the Cache-Control header.
+
+These two approaches work together to reduce the total number of requests to the upstream API, while still providing fresh data to the user. Single users making the same request will receive the browser-cached response, while different users will receive each other's cached responses from the database.
