@@ -30,6 +30,20 @@ class Weather(models.Model):
         return f'{self.resolved_city} ({self.lang}) - {self.timestamp}'
 
     def open_weather_to_model(raw_city, lang, data):
+        # Convert wind_deg to to compass direction
+        # Use 45deg offset to align with 4 cardinal directions
+        wind_deg = data.get("wind").get("deg")
+        if (wind_deg > 337.5):
+            wind_direction = 'north'
+        elif (wind_deg > 247.5):
+            wind_direction = 'west'
+        elif (wind_deg > 157.5):
+            wind_direction = 'south'
+        elif (wind_deg > 67.5):
+            wind_direction = 'east'
+        else:
+            wind_direction = 'north'
+
         return Weather(
             lang=lang,
             raw_city=raw_city,
@@ -42,7 +56,6 @@ class Weather(models.Model):
             pressure=data.get("main").get("pressure"),
             humidity=data.get("main").get("humidity"),
             wind_speed=data.get("wind").get("speed"),
-            # TODO: Convert this to north, south, east, west
-            wind_direction=data.get("wind").get("deg"),
+            wind_direction=wind_direction,
             description=data.get("weather")[0].get("description"),
         )
