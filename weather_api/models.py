@@ -33,16 +33,16 @@ class Weather(models.Model):
         # Convert wind_deg to to compass direction
         # Use 45deg offset to align with 4 cardinal directions
         wind_deg = data.get("wind").get("deg")
-        if (wind_deg > 337.5):
-            wind_direction = 'north'
-        elif (wind_deg > 247.5):
-            wind_direction = 'west'
-        elif (wind_deg > 157.5):
-            wind_direction = 'south'
-        elif (wind_deg > 67.5):
-            wind_direction = 'east'
+        if (wind_deg <= 45):
+            wind_direction = "N"
+        elif (wind_deg <= 135):
+            wind_direction = "E"
+        elif (wind_deg <= 225):
+            wind_direction = "S"
+        elif (wind_deg <= 315):
+            wind_direction = "W"
         else:
-            wind_direction = 'north'
+            wind_direction = "N"
 
         return Weather(
             lang=lang,
