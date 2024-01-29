@@ -13,6 +13,7 @@ class TestOpenWeather(TestCase):
         # Clean up run after every test method.
         pass
 
+    # Check that a well-formed request is successful
     def test_happy_path(self):
         result = asyncio.run(get_open_weather('london', 'en'))
 

@@ -26,6 +26,7 @@ class TestRequests(TestCase):
         # Clean up run after every test method.
         pass
 
+    # Check that a well-formed request is successful
     def test_happy_path(self):
         response = get_weather(self, 'london')
         self.assertEqual(response.status_code, 200)
@@ -39,6 +40,7 @@ class TestRequests(TestCase):
 
         self.assertEquals(data.get('city'), 'London', json)
 
+    # Check that a request with an invalid city name is rejected
     def test_city_not_found(self):
         response = get_weather(self, 'mumb')
         self.assertEqual(response.status_code, 404)
@@ -50,6 +52,7 @@ class TestRequests(TestCase):
             'data': 'city not found',
         })
 
+    # Check that subsequent requests for the same city are cached (within a short window)
     def test_second_request_is_cache_hit(self):
         city = 'mumbai'
 
@@ -75,4 +78,5 @@ class TestRequests(TestCase):
             'True',
         )
 
+        # The responses, including their timestamps, should be identical
         self.assertDictEqual(json_1, json_2)

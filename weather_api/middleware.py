@@ -1,3 +1,7 @@
+# In order to allow public access to the API,
+# Access-Control headers are loosened to allow any domain through.
+
+
 from django.http import HttpResponse
 from django.utils.deprecation import MiddlewareMixin
 

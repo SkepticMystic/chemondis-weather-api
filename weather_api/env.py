@@ -1,3 +1,9 @@
+# This file loads environment variables from .env file.
+# Each var is validated, and parsed into its expected type.
+# Optional vars are given a default value if not explicitly set.
+# Required vars will throw an exception if not explicitly set.
+# The results are then exposed on the ENV dict.
+
 from dotenv import get_key
 
 CACHE_TTL_MINS = get_key('.env', 'CACHE_TTL_MINS')
