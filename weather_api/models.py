@@ -1,8 +1,32 @@
 from django.db import models
 
+# Convert wind_deg to a compass direction
+
+
+class CompassDirection(models.TextChoices):
+    NORTH = "north"
+    EAST = "east"
+    SOUTH = "south"
+    WEST = "west"
+
+
+def wind_deg_to_direction(wind_deg: int):
+    if (wind_deg <= 45):
+        return CompassDirection.NORTH
+    elif (wind_deg <= 135):
+        return CompassDirection.EAST
+    elif (wind_deg <= 225):
+        return CompassDirection.SOUTH
+    elif (wind_deg <= 315):
+        return CompassDirection.WEST
+    else:
+        return CompassDirection.NORTH
+
 
 class Weather(models.Model):
+    # The user-supplied city field
     raw_city = models.CharField(max_length=180)
+    # The value Open Weather resolves raw_city to
     resolved_city = models.CharField(max_length=180)
 
     country = models.CharField(max_length=5)
@@ -17,7 +41,10 @@ class Weather(models.Model):
     humidity = models.FloatField()
 
     wind_speed = models.FloatField()
-    wind_direction = models.CharField(max_length=5)
+    wind_direction = models.CharField(
+        max_length=5,
+        choices=CompassDirection.choices
+    )
 
     lang = models.CharField(max_length=8)
     timestamp = models.DateTimeField(
@@ -30,19 +57,8 @@ class Weather(models.Model):
         return f'{self.resolved_city} ({self.lang}) - {self.timestamp}'
 
     def open_weather_to_model(raw_city, lang, data):
-        # Convert wind_deg to to compass direction
-        # Use 45deg offset to align with 4 cardinal directions
         wind_deg = data.get("wind").get("deg")
-        if (wind_deg <= 45):
-            wind_direction = "N"
-        elif (wind_deg <= 135):
-            wind_direction = "E"
-        elif (wind_deg <= 225):
-            wind_direction = "S"
-        elif (wind_deg <= 315):
-            wind_direction = "W"
-        else:
-            wind_direction = "N"
+        wind_direction = wind_deg_to_direction(wind_deg)
 
         return Weather(
             lang=lang,
