@@ -79,8 +79,11 @@ async def get_open_weather(city: str, lang: str) -> Result:
             return ok(json)
 
         else:
-            print('json.get("cod") != 200')
-            return err(json.get('message'))
+            print('get_open_weather.cod != 200')
+            return err({
+                'status': json.get('cod'),
+                'message': json.get('message'),
+            })
 
     except Exception as e:
         print('get_open_weather exception:', e)

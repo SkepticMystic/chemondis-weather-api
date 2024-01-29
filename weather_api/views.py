@@ -46,7 +46,10 @@ def refresh_cache(city: str, lang: str) -> Result:
 
     except Exception as e:
         print('refresh_cache exception:', e)
-        return err(e)
+        return err({
+            'status': 500,
+            'message': 'Error caching weather',
+        })
 
 
 class WeatherApiView(APIView):
@@ -96,9 +99,10 @@ class WeatherApiView(APIView):
             refresh_result = refresh_cache(city, lang)
 
             if (not refresh_result.ok):
+                # The err result holds a status code and message
                 return Response(
-                    refresh_result.json(),
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    refresh_result.data.message,
+                    status=refresh_result.data.status
                 )
 
             else:
