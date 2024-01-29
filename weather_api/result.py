@@ -11,12 +11,6 @@ class Result:
         self.ok = ok
         self.data = data
 
-    def log(self, prefix: str = ""):
-        if (self.ok):
-            print(prefix, "ok:", self.data)
-        else:
-            print(prefix, "err:", self.data)
-
     def json(self):
         return {
             "ok": self.ok,
