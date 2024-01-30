@@ -10,8 +10,8 @@ services:
     command: python manage.py runserver
     env_file:
       - .env
-    volumes:
-      - ./db.sqlite3:/code/db.sqlite3
+    # volumes:
+    #   - ./db.sqlite3:/code/db.sqlite3
     ports:
       - "8000:8000"
     # TODO: This shouldn't be necessary, but I'm having firewall issues on this machine
