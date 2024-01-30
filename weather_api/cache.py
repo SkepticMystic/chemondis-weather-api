@@ -1,3 +1,8 @@
+# In this module, we define a cache class for the Weather model
+# The cache is a simple database table with a TTL
+# The CACHE_TTL_MINS is set in the .env file, and controls how long
+# a cached value is valid for
+
 from datetime import datetime, timedelta
 import pytz
 import asyncio

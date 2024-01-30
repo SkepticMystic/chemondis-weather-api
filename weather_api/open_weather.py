@@ -1,3 +1,7 @@
+# Call the Open Weather api for a given city
+# Use aiohttp to make the request asynchronously
+# Return a standard Result object
+
 import aiohttp
 import asyncio
 from .result import Result, ok, err

@@ -1,6 +1,8 @@
-from django.db import models
+# The Weather model encapsulates the data we get from Open Weather
+# Items are timestamped on creation
 
-# Convert wind_deg to a compass direction
+
+from django.db import models
 
 
 class CompassDirection(models.TextChoices):
@@ -57,6 +59,9 @@ class Weather(models.Model):
         return f'{self.resolved_city} ({self.lang}) - {self.timestamp}'
 
     def open_weather_to_model(raw_city, lang, data):
+        """
+        Convert the Open Weather API response to a Weather model
+        """
         wind_deg = data.get("wind").get("deg")
         wind_direction = wind_deg_to_direction(wind_deg)
 
