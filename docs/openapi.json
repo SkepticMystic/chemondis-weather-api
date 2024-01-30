@@ -19,7 +19,7 @@
   "servers": [
     {
       "url": "https://chemondis-weather-api-rt645.ondigitalocean.app",
-      "description": "Production server (be gentle!)"
+      "description": "\"Production\" server (be gentle!)"
     },
     {
       "url": "http://localhost:8000",
@@ -43,7 +43,7 @@
           {
             "name": "city",
             "in": "path",
-            "description": "The city to fetch weather for",
+            "description": "The city to fetch weather for. Casing doesn't matter. You can specify the country, but it's not required (e.g. London,UK).",
             "required": true,
             "schema": {
               "type": "string",
@@ -64,11 +64,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Weather"
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Weather"
+                    }
+                  }
                 }
               }
             }
@@ -79,7 +88,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResult"
+                  "$ref": "#/components/schemas/BasicStringErrorResult"
                 }
               }
             }
@@ -90,7 +99,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResult"
+                  "$ref": "#/components/schemas/BasicStringErrorResult"
                 }
               }
             }
@@ -101,7 +110,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResult"
+                  "$ref": "#/components/schemas/BasicStringErrorResult"
                 }
               }
             }
@@ -116,69 +125,61 @@
       "Weather": {
         "type": "object",
         "properties": {
-          "ok": {
-            "type": "boolean",
-            "example": true
+          "city": {
+            "type": "string",
+            "example": "London"
           },
-          "data": {
-            "type": "object",
-            "properties": {
-              "city": {
-                "type": "string",
-                "example": "London"
-              },
-              "country": {
-                "type": "string",
-                "example": "UK"
-              },
-              "temp": {
-                "type": "number",
-                "format": "float",
-                "example": 23.2
-              },
-              "temp_min": {
-                "type": "number",
-                "format": "float",
-                "example": 16.3
-              },
-              "temp_max": {
-                "type": "number",
-                "format": "float",
-                "example": 27.4
-              },
-              "pressure": {
-                "type": "number",
-                "format": "float",
-                "example": 10.1
-              },
-              "humidty": {
-                "type": "number",
-                "format": "float",
-                "example": 16
-              },
-              "wind_speed": {
-                "type": "number",
-                "format": "float",
-                "example": 7.9
-              },
-              "wind_direction": {
-                "type": "string",
-                "example": "north",
-                "enum": ["north", "south", "east", "west"]
-              },
-              "description": {
-                "type": "string",
-                "example": "partly cloudy"
-              },
-              "timestamp": {
-                "type": "string",
-                "example": "2020-07-01T12:00:00Z"
-              }
-            }
+          "country": {
+            "type": "string",
+            "example": "UK"
+          },
+          "temp": {
+            "type": "number",
+            "format": "float",
+            "example": 23.2
+          },
+          "temp_min": {
+            "type": "number",
+            "format": "float",
+            "example": 16.3
+          },
+          "temp_max": {
+            "type": "number",
+            "format": "float",
+            "example": 27.4
+          },
+          "pressure": {
+            "type": "number",
+            "format": "float",
+            "example": 10.1
+          },
+          "humidty": {
+            "type": "number",
+            "format": "float",
+            "example": 16
+          },
+          "wind_speed": {
+            "type": "number",
+            "format": "float",
+            "example": 7.9
+          },
+          "wind_direction": {
+            "type": "string",
+            "example": "north",
+            "enum": ["north", "south", "east", "west"]
+          },
+          "description": {
+            "type": "string",
+            "example": "partly cloudy"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2020-07-01T12:00:00Z"
           }
         }
       },
-      "ErrorResult": {
+
+      "BasicStringErrorResult": {
         "type": "object",
         "properties": {
           "ok": {
