@@ -18,6 +18,10 @@
   },
   "servers": [
     {
+      "url": "https://chemondis-weather-api-rt645.ondigitalocean.app",
+      "description": "Production server (be gentle!)"
+    },
+    {
       "url": "http://localhost:8000",
       "description": "Local development server"
     }

@@ -4,43 +4,9 @@
 
 This project deploys a Django REST API enabling users to fetch the current weather in any city. The data is pulled from [Open Weather Map](https://openweathermap.org). Results are [cached](#caching) for a configurable amount of time, to avoid hitting the upstream API too often.
 
-## Requirements
-
-- Docker
-- An OpenWeatherMap API key
-  - You can get one for free [here](https://openweathermap.org/api).
-
-## Deployment
-
-To deploy the API in your local environment, follow these steps:
-
-1. Clone the repository:
-
-```sh
-git clone https://github.com/SkepticMystic/chemondis-weather-api.git
-```
-
-2. Navigate to the project directory:
-
-```sh
-cd chemondis-weather-api
-```
-
-3. Create a `.env` file in the root of the project, and set the `OPEN_WEATHER_API_KEY` variable to your [OpenWeatherMap API key](#requirements). The file should look like this (with `{your-api-key}` replaced with your actual API key):
-
-```env
-OPEN_WEATHER_API_KEY="{your-api-key}"
-```
-
-4. Build and run the Docker container:
-
-```sh
-docker compose up --build
-```
-
 ## Usage
 
-Once running, the API can be accessed at `http://localhost:8000/weather/{city}`, where `{city}` is the name of the city you want to fetch the weather for.
+The API can be quickly accessed at the live endpoint: `https://chemondis-weather-api-rt645.ondigitalocean.app/weather/{city}`, where `{city}` is the name of the city you want to fetch the weather for.
 
 > [!TIP]
 > Using the Open API spec found at [/docs/openapi.json](https://github.com/SkepticMystic/chemondis-weather-api/blob/main/docs/openapi.json), you can execute the API directly from the documentation page. Paste the file contents into the editor at [editor.swagger.io](https://editor.swagger.io), and click the "Try it out" button.
@@ -92,7 +58,47 @@ The following query parameters can be used to customize the response:
   - `de` (German)
   - `af` (Afrikaans)
 
-## Configuration
+## Development
+
+The project can also be built and run locally.
+
+### Requirements
+
+- Docker
+- An OpenWeatherMap API key
+  - You can get one for free [here](https://openweathermap.org/api).
+
+### Steps
+
+To deploy the API in your local environment, follow these steps:
+
+1. Clone the repository:
+
+```sh
+git clone https://github.com/SkepticMystic/chemondis-weather-api.git
+```
+
+2. Navigate to the project directory:
+
+```sh
+cd chemondis-weather-api
+```
+
+3. Create a `.env` file in the root of the project, and set the `OPEN_WEATHER_API_KEY` variable to your [OpenWeatherMap API key](#requirements). The file should look like this (with `{your-api-key}` replaced with your actual API key):
+
+```env
+OPEN_WEATHER_API_KEY="{your-api-key}"
+```
+
+4. Build and run the Docker container:
+
+```sh
+docker compose up --build
+```
+
+5. The API should now be running at `http://localhost:8000`.
+
+### Configuration
 
 The following environment variables can be set to configure the API. They can be set in a `.env` file in the root of the project.
 
