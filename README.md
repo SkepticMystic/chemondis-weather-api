@@ -10,6 +10,7 @@ The API can be quickly accessed at the live endpoint: `https://chemondis-weather
 
 > [!TIP]
 > Using the Open API spec found at [/docs/openapi.json](https://github.com/SkepticMystic/chemondis-weather-api/blob/main/docs/openapi.json), you can execute the API directly from the documentation page. Paste the file contents into the editor at [editor.swagger.io](https://editor.swagger.io), and click the "Try it out" button.
+> The spec can call the endpoint from the live URL on Digital Ocean, or on a [locally deployed](#development) instance (`http://localhost:8000`).
 
 The result is returned as a JSON object.
 On a successful request, the response will be in the following shape (the `Weather` type is defined further below):
