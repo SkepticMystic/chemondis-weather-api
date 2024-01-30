@@ -68,3 +68,12 @@ class TestDataConversion(TestCase):
         self.assertEqual(weather.wind_speed, 3.6)
         self.assertEqual(weather.wind_direction, 'south')
         self.assertEqual(weather.lang, lang)
+
+    # Check that an invalid input raises an exception
+    def test_invalid_input(self):
+        raw_city = 'london'
+        lang = 'en'
+
+        with self.assertRaises(Exception):
+            Weather.open_weather_to_model(
+                raw_city, lang, {'invalid': 'response'})

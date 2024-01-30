@@ -40,6 +40,15 @@ class TestRequests(TestCase):
 
         self.assertEquals(data.get('city'), 'London', json)
 
+    # Check that an invalid language is rejected
+    def test_invalid_lang(self):
+        response = get_weather(self, 'london', 'zz')
+        self.assertEqual(response.status_code, 400)
+
+        json = safe_parse_json(response)
+        self.assertIsNotNone(json, response)
+        self.assertFalse(json.get('ok'), json)
+
     # Check that a request with an invalid city name is rejected
     def test_city_not_found(self):
         response = get_weather(self, 'mumb')
