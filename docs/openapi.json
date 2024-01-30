@@ -94,6 +94,17 @@
             }
           },
 
+          "401": {
+            "description": "Invalid Open Weather API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicStringErrorResult"
+                }
+              }
+            }
+          },
+
           "404": {
             "description": "City not found",
             "content": {
