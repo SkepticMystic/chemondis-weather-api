@@ -4,9 +4,13 @@
 # Required vars will throw an exception if not explicitly set.
 # The results are then exposed on the ENV dict.
 
-from dotenv import get_key
+from dotenv import load_dotenv
+import os
 
-CACHE_TTL_MINS = get_key('.env', 'CACHE_TTL_MINS')
+load_dotenv()
+
+
+CACHE_TTL_MINS = os.getenv('CACHE_TTL_MINS')
 if (
     CACHE_TTL_MINS is None or
     CACHE_TTL_MINS not in ['5', '10', '60']
@@ -16,7 +20,7 @@ else:
     CACHE_TTL_MINS = int(CACHE_TTL_MINS)
 
 
-OPEN_WEATHER_API_KEY = get_key('.env', 'OPEN_WEATHER_API_KEY')
+OPEN_WEATHER_API_KEY = os.getenv('OPEN_WEATHER_API_KEY')
 if (OPEN_WEATHER_API_KEY is None or OPEN_WEATHER_API_KEY == ''):
     raise Exception('OPEN_WEATHER_API_KEY not found in .env')
 
