@@ -4,6 +4,16 @@
 
 This project deploys a Django REST API enabling users to fetch the current weather in any city. The data is pulled from [Open Weather Map](https://openweathermap.org). Results are [cached](#caching) for a configurable amount of time, to avoid hitting the upstream API too often.
 
+In this document:
+
+- [Usage](#usage)
+  - [Query Parameters](#query-parameters)
+- [Development/Local Deployment](#development)
+  - [Requirements](#requirements)
+  - [Steps](#steps)
+  - [Configuration](#configuration)
+- [Caching](#caching)
+
 ## Usage
 
 The API can be quickly accessed at the live endpoint: `https://chemondis-weather-api-rt645.ondigitalocean.app/weather/{city}`, where `{city}` is the name of the city you want to fetch the weather for.
